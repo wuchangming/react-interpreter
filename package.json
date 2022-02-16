@@ -1,6 +1,6 @@
 {
   "name": "react-interpreter",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "react interpreter",
   "main": "lib/react-interpreter.js",
   "unpkg": "dist/react-interpreter.js",
@@ -16,6 +16,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
+    "version": "changeset version",
     "release": "yarn build && yarn changeset publish"
   },
   "repository": {
