@@ -69,6 +69,10 @@ export default [
     {
         input: 'src/index.ts',
         output: { file: 'es/react-interpreter.mjs', format: 'es', indent: false },
+        external: makeExternalPredicate([
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.peerDependencies || {}),
+        ]),
         plugins: [
             commonjs(),
             nodeResolve({
@@ -105,6 +109,10 @@ export default [
             name: 'ReactInterpreter',
             indent: false,
         },
+        external: makeExternalPredicate([
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.peerDependencies || {}),
+        ]),
         plugins: [
             commonjs(),
             nodeResolve({
@@ -132,6 +140,10 @@ export default [
             name: 'ReactInterpreter',
             indent: false,
         },
+        external: makeExternalPredicate([
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.peerDependencies || {}),
+        ]),
         plugins: [
             commonjs(),
             nodeResolve({
