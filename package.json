@@ -45,5 +45,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.17.2"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }
