@@ -12,7 +12,7 @@
     "sourceMap": true,
     "removeComments": false,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "baseUrl": "./"
   },
   "include": ["src/**/*"],

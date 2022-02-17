@@ -3,6 +3,7 @@ import Interpreter from '../js-interpreter/interpreter'
 import { transformComponent, CompObj } from './transformComponent'
 import { SendMessageKey, FuncPrefix } from './constants'
 import { createAsyncSwitcher } from './createAsyncSwitcher'
+import { injectGlobalObject } from './injectGlobalObject'
 
 type InsideMessage =
     | {
@@ -27,7 +28,16 @@ type ReactInterpreterProps = {
     /**
      * 需要注入的全局变量
      */
-    globalObjectMap?: { [key in string]: object }
+    globalObject?: { [key in string]: any }
+    /**
+     * 设置被注入的全局变量的复杂属性最大层级。
+     * 
+     * 为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会
+     * 被丢弃掉「如 function 和出现循环引用的 object 等」。
+     * 
+     * 默认值：3
+     */
+    globalObjectComplexPropLevel?: number
     /**
      * 需要注入的 React 组件
      */
@@ -35,7 +45,7 @@ type ReactInterpreterProps = {
 }
 
 export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
-    const { code, globalObjectMap, componentMap, ...restProps } = props
+    const { code, globalObject: inputGlobalObject, globalObjectComplexPropLevel, componentMap, ...restProps } = props
 
     const [components, setComponents] = useState<CompObj>()
 
@@ -120,27 +130,7 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
                 )
             )
             // 注入全局变量
-            Object.keys(globalObjectMap || {}).forEach((k) => {
-                const pseudoObj = interpreter.createObjectProto(interpreter.OBJECT_PROTO)
-                interpreter.setProperty(globalObject, k, pseudoObj, Interpreter.READONLY_DESCRIPTOR)
-                const kObj = globalObjectMap?.[k] || {}
-                Object.keys(kObj).forEach((pk) => {
-                    if (typeof kObj[pk] === 'function') {
-                        interpreter.setProperty(
-                            pseudoObj,
-                            pk,
-                            interpreter.createNativeFunction(function (params) {
-                                if (typeof params === 'object') {
-                                    kObj[pk](params.properties)
-                                } else {
-                                    kObj[pk](params)
-                                }
-                            }, false),
-                            Interpreter.NONENUMERABLE_DESCRIPTOR
-                        )
-                    }
-                })
-            })
+            injectGlobalObject(interpreter, globalObject, inputGlobalObject, globalObjectComplexPropLevel)
         })
         compInterpreter.run()
     }, [props])
