@@ -23,85 +23,100 @@ yarn add react-interpreter --save
 
 ⚠️React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过 [babel 进行转换](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
 
-#### Taro3 中用法示例
+-   #### Taro3 中用法示例
 
-```tsx
+    ```tsx
 
-import { ReactInterpreter } from 'react-interpreter'
-import Taro from '@tarojs/taro'
-import * as taroComponents from '@tarojs/components'
+    import { ReactInterpreter } from 'react-interpreter'
+    import Taro from '@tarojs/taro'
+    import * as taroComponents from '@tarojs/components'
 
-/*
-    Babel 转换前代码如下：
+    /*
+        Babel 转换前代码如下：
 
-    // 注意：这个组件名命名只要不和注入的组件重名就行，没有特别要求
-    function MyReactInterpreterComp() {
-        return (
-            <View
-                style={{
-                    backgroundColor: 'red',
-                }}
-            >
-                <Button
-                    onClick={() => {
-                        Taro.showToast({
-                            icon: 'none',
-                            title: '😂😂😂',
-                        })
+        // 注意：这个组件名命名只要不和注入的组件重名就行，没有特别要求
+        function MyReactInterpreterComp() {
+            return (
+                <View
+                    style={{
+                        backgroundColor: 'pink',
+                        height: '100vh',
+                        display: 'flex',
+                        alignItems: 'center',
                     }}
                 >
-                    Click Me 🤔️
-                </Button>
-            </View>
+                    <Button
+                        style={{ backgroundColor: 'blue', color: '#FFFFFF' }}
+                        onClick={() => {
+                            Taro.showToast({
+                                icon: 'none',
+                                title: '😂😂😂',
+                            })
+                        }}
+                    >
+                        Click Me!
+                    </Button>
+                </View>
+            )
+        }
+    */
+
+    // Babel 转换后
+    const codeString = `
+    function MyReactInterpreterComp() {
+    return /*#__PURE__*/ React.createElement(
+        View,
+        {
+        style: {
+            backgroundColor: "pink",
+            height: "100vh",
+            display: "flex",
+            alignItems: "center"
+        }
+        },
+        /*#__PURE__*/ React.createElement(
+        Button,
+        {
+            style: {
+            backgroundColor: "blue",
+            color: "#FFFFFF"
+            },
+            onClick: function onClick() {
+            Taro.showToast({
+                icon: "none",
+                title: "😂😂😂"
+            });
+            }
+        },
+        "Click Me!"
+        )
+    );
+    }
+    `
+
+    const MyComponent = () => {
+        return (
+            <ReactInterpreter
+                // globalObject: 可设置沙盒内全局变量
+                // 把 Taro 对象注入到沙盒中，有需要也可以把 wx 对象注入
+                globalObject={{
+                    Taro,
+                }}
+                // componentMap: 接收真实的组件定义
+                // 这里注入全部 @tarojs/components，可以根据实际情况选择部分注入
+                componentMap={taroComponents}
+                // code: 需要运行的组件代码
+                // 只支持 es5，如果代码包含 jsx 和 es6，可先通过 babel 进行转换
+                code={codeString}
+            />
         )
     }
-*/
 
-// Babel 转换后
-const codeString = `
-function MyReactInterpreterComp() {
-  return /*#__PURE__*/ React.createElement(
-    View,
-    {
-      style: {
-        backgroundColor: "red"
-      }
-    },
-    /*#__PURE__*/ React.createElement(
-      Button,
-      {
-        onClick: function onClick() {
-          Taro.showToast({
-            icon: "none",
-            title: "😂😂😂"
-          });
-        }
-      },
-      "Click Me 🤔️"
-    )
-  );
-}
-`
+    ```
 
-const MyComponent = () => {
-    return (
-        <ReactInterpreter
-            // globalObject: 可设置沙盒内全局变量
-            // 把 Taro 对象注入到沙盒中，有需要也可以把 wx 对象注入
-            globalObject={{
-                Taro,
-            }}
-            // componentMap: 接收真实的组件定义
-            // 这里注入全部 @tarojs/components，可以根据实际情况选择部分注入
-            componentMap={taroComponents}
-            // code: 需要运行的组件代码
-            // 只支持 es5，如果代码包含 jsx 和 es6，可先通过 babel 进行转换
-            code={codeString}
-        />
-    )
-}
+    Taro3 中用法示例效果图
 
-```
+    <image src='./docs/imgs/demo.jpeg' width = '200'/>
 
 ### `JSInterpreter` - JS 沙盒
 
