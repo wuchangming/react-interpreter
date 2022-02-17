@@ -23,36 +23,36 @@ type ReactInterpreterProps = {
     /**
      * React沙盒运行的代码字符串
      */
-    ri_code?: string
+    code?: string
     /**
      * 需要注入的全局变量
      */
-    ri_globalObjectMap?: { [key in string]: object }
+    globalObjectMap?: { [key in string]: object }
     /**
      * 需要注入的 React 组件
      */
-    ri_componentMap?: { [key in string]: any }
+    componentMap?: { [key in string]: any }
 }
 
 export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
-    const { ri_code, ri_globalObjectMap, ri_componentMap, ...restProps } = props
+    const { code, globalObjectMap, componentMap, ...restProps } = props
 
     const [components, setComponents] = useState<CompObj>()
 
     const s = useRef<(msg: OutsideMsg) => void>()
 
     useEffect(() => {
-        if (!props.ri_code) {
+        if (!props.code) {
             return
         }
-        const compCode = props.ri_code
+        const compCode = props.code
             .trim()
             .replace(/^\"use strict\";/, '')
             .replace(/^\'use strict\';/, '')
 
         const exeCode = `
         (function () {
-            ${Object.keys(ri_componentMap || {})
+            ${Object.keys(componentMap || {})
                 .map((k) => {
                     return `var ${k} = {
                     type: "${k}"
@@ -120,10 +120,10 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
                 )
             )
             // 注入全局变量
-            Object.keys(ri_globalObjectMap || {}).forEach((k) => {
+            Object.keys(globalObjectMap || {}).forEach((k) => {
                 const pseudoObj = interpreter.createObjectProto(interpreter.OBJECT_PROTO)
                 interpreter.setProperty(globalObject, k, pseudoObj, Interpreter.READONLY_DESCRIPTOR)
-                const kObj = ri_globalObjectMap?.[k] || {}
+                const kObj = globalObjectMap?.[k] || {}
                 Object.keys(kObj).forEach((pk) => {
                     if (typeof kObj[pk] === 'function') {
                         interpreter.setProperty(
@@ -146,7 +146,7 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
     }, [props])
 
     return components
-        ? transformComponent(ri_componentMap || {}, components, (funcId, args) => {
+        ? transformComponent(componentMap || {}, components, (funcId, args) => {
               s.current?.({
                   type: 'exeFunc',
                   funcId,
