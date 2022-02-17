@@ -23,7 +23,7 @@ yarn add react-interpreter --save
 
 ⚠️React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过 [babel 进行转换](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
 
--   #### Taro3 中用法示例 [Demo](./demos/taro-demo/)
+-   #### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
 
     ```tsx
 
