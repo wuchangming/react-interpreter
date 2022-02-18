@@ -1,6 +1,6 @@
 {
   "name": "react-interpreter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "react interpreter",
   "main": "lib/react-interpreter.js",
   "unpkg": "dist/react-interpreter.js",
