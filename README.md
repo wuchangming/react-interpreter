@@ -210,11 +210,19 @@ yarn add react-interpreter --save
 
 ### `JSInterpreter` - JS 沙盒
 
-```ts
-import { JSInterpreter } from 'react-interpreter'
-```
+如果只需要执行 JS ，可直接使用 JSInterpreter
 
-参考 JS-Interpreter 文档： [https://neil.fraser.name/software/JS-Interpreter/docs.html](https://neil.fraser.name/software/JS-Interpreter/docs.html)
+-   ### 基本用法
+
+    ```ts
+    import { JSInterpreter } from 'react-interpreter'
+
+    const myInterpreter = new JSInterpreter('6 * 7')
+    myInterpreter.run()
+    console.log(myInterpreter.value)
+    ```
+
+    JSInterpreter 代码基本都是使用的 [JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter) 项目，只做了对微信小程序相关 bug 的修复，所以详细文档可直接参考 JS-Interpreter 文档： [https://neil.fraser.name/software/JS-Interpreter/docs.html](https://neil.fraser.name/software/JS-Interpreter/docs.html)
 
 ## 灵感来源
 
