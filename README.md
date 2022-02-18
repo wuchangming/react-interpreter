@@ -23,7 +23,8 @@ yarn add react-interpreter --save
 
 -   ### **Props**
 
-    -   `code`  
+    -   #### `code`
+
         React 沙盒运行的代码字符串 [PS: ⚠️React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过 [babel 进行转换](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)]
 
         ```ts
@@ -84,7 +85,7 @@ yarn add react-interpreter --save
 
             <image src='./docs/imgs/code-demo.jpeg' width = '200'/>
 
-    -   `globalObject`
+    -   #### `globalObject`
         需要注入沙盒中的全局变量
 
         ```ts
@@ -94,7 +95,7 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   `componentMap`
+    -   #### `componentMap`
         需要注入沙盒中的 React 组件
 
         ```ts
@@ -104,7 +105,7 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   `globalObjectComplexPropLevel`
+    -   #### `globalObjectComplexPropLevel`
 
         `默认值：3`
 
