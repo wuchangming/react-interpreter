@@ -1,3 +1,4 @@
+import { env } from 'process'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import babel from '@rollup/plugin-babel'
 import replace from '@rollup/plugin-replace'
@@ -20,154 +21,173 @@ const makeExternalPredicate = (externalArr) => {
     return (id) => pattern.test(id)
 }
 
-export default [
-    // CommonJS
-    {
-        input: 'src/index.ts',
-        output: { file: 'lib/react-interpreter.js', format: 'cjs', indent: false },
-        external: makeExternalPredicate([
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ]),
-        plugins: [
-            commonjs(),
-            nodeResolve({
-                extensions,
-            }),
-            typescript({ useTsconfigDeclarationDir: true }),
-            babel({
-                extensions,
-                plugins: [['@babel/plugin-transform-runtime', { version: babelRuntimeVersion }]],
-                babelHelpers: 'runtime',
-            }),
-        ],
-    },
+async function getBanner() {
+    const date = new Date(env.SOURCE_DATE_EPOCH ? 1000 * +env.SOURCE_DATE_EPOCH : Date.now()).toUTCString()
+    return `/*
+  @license
+  react-interpreter.js v${pkg.version}
+  ${date}
+  @author ${pkg.author}
+  https://github.com/wuchangming/react-interpreter
+  Released under the MIT License.
+*/`
+}
 
-    // ES
-    {
-        input: 'src/index.ts',
-        output: { file: 'es/react-interpreter.js', format: 'es', indent: false },
-        external: makeExternalPredicate([
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ]),
-        plugins: [
-            commonjs(),
-            nodeResolve({
-                extensions,
-            }),
-            typescript({ tsconfigOverride: noDeclarationFiles }),
-            babel({
-                extensions,
-                plugins: [['@babel/plugin-transform-runtime', { version: babelRuntimeVersion, useESModules: true }]],
-                babelHelpers: 'runtime',
-            }),
-        ],
-    },
-
-    // // ES for Browsers
-    {
-        input: 'src/index.ts',
-        output: { file: 'es/react-interpreter.mjs', format: 'es', indent: false },
-        external: makeExternalPredicate([
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ]),
-        plugins: [
-            commonjs(),
-            nodeResolve({
-                extensions,
-            }),
-            replace({
-                preventAssignment: true,
-                'process.env.NODE_ENV': JSON.stringify('production'),
-            }),
-            typescript({ tsconfigOverride: noDeclarationFiles }),
-            babel({
-                extensions,
-                exclude: 'node_modules/**',
-                skipPreflightCheck: true,
-                babelHelpers: 'bundled',
-            }),
-            terser({
-                compress: {
-                    pure_getters: true,
-                    unsafe: true,
-                    unsafe_comps: true,
-                    warnings: false,
-                },
-            }),
-        ],
-    },
-
-    // // UMD Development
-    {
-        input: 'src/index.ts',
-        output: {
-            file: 'dist/react-interpreter.js',
-            format: 'umd',
-            name: 'ReactInterpreter',
-            indent: false,
+export default async function () {
+    const banner = await getBanner()
+    return [
+        // CommonJS
+        {
+            input: 'src/index.ts',
+            output: { banner, file: 'lib/react-interpreter.js', format: 'cjs', indent: false },
+            external: makeExternalPredicate([
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ]),
+            plugins: [
+                commonjs(),
+                nodeResolve({
+                    extensions,
+                }),
+                typescript({ useTsconfigDeclarationDir: true }),
+                babel({
+                    extensions,
+                    plugins: [['@babel/plugin-transform-runtime', { version: babelRuntimeVersion }]],
+                    babelHelpers: 'runtime',
+                }),
+            ],
         },
-        external: makeExternalPredicate([
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ]),
-        plugins: [
-            commonjs(),
-            nodeResolve({
-                extensions,
-            }),
-            typescript({ tsconfigOverride: noDeclarationFiles }),
-            babel({
-                extensions,
-                exclude: 'node_modules/**',
-                babelHelpers: 'bundled',
-            }),
-            replace({
-                preventAssignment: true,
-                'process.env.NODE_ENV': JSON.stringify('development'),
-            }),
-        ],
-    },
 
-    // // UMD Production
-    {
-        input: 'src/index.ts',
-        output: {
-            file: 'dist/react-interpreter.min.js',
-            format: 'umd',
-            name: 'ReactInterpreter',
-            indent: false,
+        // ES
+        {
+            input: 'src/index.ts',
+            output: { banner, file: 'es/react-interpreter.js', format: 'es', indent: false },
+            external: makeExternalPredicate([
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ]),
+            plugins: [
+                commonjs(),
+                nodeResolve({
+                    extensions,
+                }),
+                typescript({ tsconfigOverride: noDeclarationFiles }),
+                babel({
+                    extensions,
+                    plugins: [
+                        ['@babel/plugin-transform-runtime', { version: babelRuntimeVersion, useESModules: true }],
+                    ],
+                    babelHelpers: 'runtime',
+                }),
+            ],
         },
-        external: makeExternalPredicate([
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ]),
-        plugins: [
-            commonjs(),
-            nodeResolve({
-                extensions,
-            }),
-            typescript({ tsconfigOverride: noDeclarationFiles }),
-            babel({
-                extensions,
-                exclude: 'node_modules/**',
-                skipPreflightCheck: true,
-                babelHelpers: 'bundled',
-            }),
-            replace({
-                preventAssignment: true,
-                'process.env.NODE_ENV': JSON.stringify('production'),
-            }),
-            terser({
-                compress: {
-                    pure_getters: true,
-                    unsafe: true,
-                    unsafe_comps: true,
-                    warnings: false,
-                },
-            }),
-        ],
-    },
-]
+
+        // // ES for Browsers
+        {
+            input: 'src/index.ts',
+            output: { banner, file: 'es/react-interpreter.mjs', format: 'es', indent: false },
+            external: makeExternalPredicate([
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ]),
+            plugins: [
+                commonjs(),
+                nodeResolve({
+                    extensions,
+                }),
+                replace({
+                    preventAssignment: true,
+                    'process.env.NODE_ENV': JSON.stringify('production'),
+                }),
+                typescript({ tsconfigOverride: noDeclarationFiles }),
+                babel({
+                    extensions,
+                    exclude: 'node_modules/**',
+                    skipPreflightCheck: true,
+                    babelHelpers: 'bundled',
+                }),
+                terser({
+                    compress: {
+                        pure_getters: true,
+                        unsafe: true,
+                        unsafe_comps: true,
+                        warnings: false,
+                    },
+                }),
+            ],
+        },
+
+        // // UMD Development
+        {
+            input: 'src/index.ts',
+            output: {
+                banner,
+                file: 'dist/react-interpreter.js',
+                format: 'umd',
+                name: 'ReactInterpreter',
+                indent: false,
+            },
+            external: makeExternalPredicate([
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ]),
+            plugins: [
+                commonjs(),
+                nodeResolve({
+                    extensions,
+                }),
+                typescript({ tsconfigOverride: noDeclarationFiles }),
+                babel({
+                    extensions,
+                    exclude: 'node_modules/**',
+                    babelHelpers: 'bundled',
+                }),
+                replace({
+                    preventAssignment: true,
+                    'process.env.NODE_ENV': JSON.stringify('development'),
+                }),
+            ],
+        },
+
+        // // UMD Production
+        {
+            input: 'src/index.ts',
+            output: {
+                banner,
+                file: 'dist/react-interpreter.min.js',
+                format: 'umd',
+                name: 'ReactInterpreter',
+                indent: false,
+            },
+            external: makeExternalPredicate([
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ]),
+            plugins: [
+                commonjs(),
+                nodeResolve({
+                    extensions,
+                }),
+                typescript({ tsconfigOverride: noDeclarationFiles }),
+                babel({
+                    extensions,
+                    exclude: 'node_modules/**',
+                    skipPreflightCheck: true,
+                    babelHelpers: 'bundled',
+                }),
+                replace({
+                    preventAssignment: true,
+                    'process.env.NODE_ENV': JSON.stringify('production'),
+                }),
+                terser({
+                    compress: {
+                        pure_getters: true,
+                        unsafe: true,
+                        unsafe_comps: true,
+                        warnings: false,
+                    },
+                }),
+            ],
+        },
+    ]
+}
