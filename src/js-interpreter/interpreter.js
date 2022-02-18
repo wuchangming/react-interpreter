@@ -185,7 +185,7 @@ Interpreter.vm = null
  */
 Interpreter.nativeGlobal =
     // eslint-disable-next-line no-undef
-    typeof globalThis === 'undefined' ? this : globalThis
+    typeof globalThis === 'undefined' ? undefined : globalThis
 
 /**
  * Code for executing regular expressions in a thread.

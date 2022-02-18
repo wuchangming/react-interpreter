@@ -21,11 +21,11 @@ const makeExternalPredicate = (externalArr) => {
     return (id) => pattern.test(id)
 }
 
-async function getBanner() {
+function getBanner(filename) {
     const date = new Date(env.SOURCE_DATE_EPOCH ? 1000 * +env.SOURCE_DATE_EPOCH : Date.now()).toUTCString()
     return `/*
   @license
-  react-interpreter.js v${pkg.version}
+  ${filename} v${pkg.version}
   ${date}
   @author ${pkg.author}
   https://github.com/wuchangming/react-interpreter
@@ -34,12 +34,16 @@ async function getBanner() {
 }
 
 export default async function () {
-    const banner = await getBanner()
     return [
         // CommonJS
         {
             input: 'src/index.ts',
-            output: { banner, file: 'lib/react-interpreter.js', format: 'cjs', indent: false },
+            output: {
+                banner: getBanner('react-interpreter.js'),
+                file: 'lib/react-interpreter.js',
+                format: 'cjs',
+                indent: false,
+            },
             external: makeExternalPredicate([
                 ...Object.keys(pkg.dependencies || {}),
                 ...Object.keys(pkg.peerDependencies || {}),
@@ -61,7 +65,12 @@ export default async function () {
         // ES
         {
             input: 'src/index.ts',
-            output: { banner, file: 'es/react-interpreter.js', format: 'es', indent: false },
+            output: {
+                banner: getBanner('react-interpreter.js'),
+                file: 'es/react-interpreter.js',
+                format: 'es',
+                indent: false,
+            },
             external: makeExternalPredicate([
                 ...Object.keys(pkg.dependencies || {}),
                 ...Object.keys(pkg.peerDependencies || {}),
@@ -85,7 +94,12 @@ export default async function () {
         // // ES for Browsers
         {
             input: 'src/index.ts',
-            output: { banner, file: 'es/react-interpreter.mjs', format: 'es', indent: false },
+            output: {
+                banner: getBanner('react-interpreter.mjs'),
+                file: 'es/react-interpreter.mjs',
+                format: 'es',
+                indent: false,
+            },
             external: makeExternalPredicate([
                 ...Object.keys(pkg.dependencies || {}),
                 ...Object.keys(pkg.peerDependencies || {}),
@@ -121,11 +135,14 @@ export default async function () {
         {
             input: 'src/index.ts',
             output: {
-                banner,
+                banner: getBanner('react-interpreter.js'),
                 file: 'dist/react-interpreter.js',
                 format: 'umd',
                 name: 'ReactInterpreter',
                 indent: false,
+                globals: {
+                    react: 'React',
+                },
             },
             external: makeExternalPredicate([
                 ...Object.keys(pkg.dependencies || {}),
@@ -153,11 +170,14 @@ export default async function () {
         {
             input: 'src/index.ts',
             output: {
-                banner,
+                banner: getBanner('react-interpreter.min.js'),
                 file: 'dist/react-interpreter.min.js',
                 format: 'umd',
                 name: 'ReactInterpreter',
                 indent: false,
+                globals: {
+                    react: 'React',
+                },
             },
             external: makeExternalPredicate([
                 ...Object.keys(pkg.dependencies || {}),
