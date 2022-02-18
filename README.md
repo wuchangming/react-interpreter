@@ -26,17 +26,75 @@ yarn add react-interpreter --save
     -   `code`  
         React 沙盒运行的代码字符串 [PS: ⚠️React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过 [babel 进行转换](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)]
 
-    -   `globalObject`  
+        ```ts
+        import { ReactInterpreter } from 'react-interpreter'
+        import { View, Text } from '@tarojs/components'
+        /*
+        【Babel 编译前组件代码】
+        */
+        /*
+        注意：这个组件名命名只要不和注入的组件重名就行，没有特别要求
+        function MyComp() {
+            return (
+                <View
+                    style={{
+                        backgroundColor: '#00C28E',
+                        height: '100vh',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text>Hello World !</Text>
+                </View>
+            )
+        }
+        */
+        /*
+        【Babel 编译后组件代码 string】
+        */
+        const codeString = `function MyComp() {
+            return React.createElement(
+                View,
+                {
+                    style: {
+                        backgroundColor: '#00C28E',
+                        height: '100vh',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    },
+                },
+                React.createElement(Text, null, 'Hello World !')
+            )
+        }`
+        const MyComp = () => (
+            <ReactInterpreter
+                code={codeString}
+                componentMap={{
+                    View,
+                    Text,
+                }}
+            ></ReactInterpreter>
+        )
+        ```
+
+        -   效果图
+
+
+            <image src='./docs/imgs/code-demo.jpeg' width = '200'/>
+
+    -   `globalObject`
         需要注入沙盒中的全局变量
 
         ```ts
         globalObject = {
-            wx,
-            console
+            wx, // 注入 wx 全局变量
+            console // 注入 console 控制台
         }
         ```
 
-    -   `componentMap`  
+    -   `componentMap`
         需要注入沙盒中的 React 组件
 
         ```ts
@@ -46,11 +104,11 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   `globalObjectComplexPropLevel`  
-        `默认值：3`  
+    -   `globalObjectComplexPropLevel`
+        `默认值：3`
         设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。
 
-*   ### 实例
+-   ### 实例
 
     -   ### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
 
