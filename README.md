@@ -48,7 +48,7 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   `globalObjectComplexPropLevel`
+    -   `globalObjectComplexPropLevel`  
         设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。`默认值：3`
 
 -   ### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
