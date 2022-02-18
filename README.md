@@ -105,7 +105,9 @@ yarn add react-interpreter --save
         ```
 
     -   `globalObjectComplexPropLevel`
+
         `默认值：3`
+
         设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。
 
 -   ### 实例
