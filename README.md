@@ -23,10 +23,37 @@ yarn add react-interpreter --save
 
 ⚠️React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过 [babel 进行转换](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
 
--   #### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
+-   ### **Props**
+
+    -   `code`  
+        React 沙盒运行的代码字符串
+
+    -   `globalObject`  
+        需要注入沙盒中的全局变量
+
+        ```ts
+        globalObject = {
+            wx,
+            console
+        }
+        ```
+
+    -   `componentMap`  
+        需要注入沙盒中的 React 组件
+
+        ```ts
+        import { View } from '@tarojs/components'
+        componentMap={
+            View
+        }
+        ```
+
+    -   `globalObjectComplexPropLevel`
+        设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。`默认值：3`
+
+-   ### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
 
     ```tsx
-
     import { ReactInterpreter } from 'react-interpreter'
     import Taro from '@tarojs/taro'
     import * as taroComponents from '@tarojs/components'
@@ -128,5 +155,5 @@ import { JSInterpreter } from 'react-interpreter'
 
 ## 灵感来源
 
-[JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter)  
-[jsjs](https://github.com/bramblex/jsjs)
+-   [JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter)
+-   [jsjs](https://github.com/bramblex/jsjs)
