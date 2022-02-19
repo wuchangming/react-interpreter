@@ -1,8 +1,8 @@
-import { Component } from 'react'
-import './index.less'
 import { ReactInterpreter } from 'react-interpreter'
 import Taro from '@tarojs/taro'
 import * as taroComps from '@tarojs/components'
+import { Component } from 'react'
+import './index.less'
 
 const codeString = `
 function MyReactInterpreterComp() {
