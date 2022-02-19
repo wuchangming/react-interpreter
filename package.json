@@ -16,7 +16,8 @@
   "scripts": {
     "test": "jest",
     "build": "rollup -c",
-    "release": "yarn build && npm publish"
+    "prepare-release": "npm run test && npm run build",
+    "release": "npm run prepare-release && npm publish"
   },
   "repository": {
     "type": "git",
