@@ -14,7 +14,7 @@
     "types"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "rollup -c",
     "release": "yarn build && npm publish"
   },
@@ -35,11 +35,14 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-replace": "^3.1.0",
+    "@types/jest": "^27.4.0",
     "@types/react": "^17.0.39",
+    "jest": "^27.5.1",
     "react": "^17.0.2",
     "rollup": "^2.67.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
   },
   "dependencies": {

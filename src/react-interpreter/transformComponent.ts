@@ -37,7 +37,7 @@ export function transformComponent(
     const Comp: React.ComponentType = polyfillComponents[(typeOrString as SupportType).type]
 
     if (Comp === undefined) {
-        throw '不支持当前 Component 类型: ' + typeOrString
+        throw '不支持当前 Component 类型: ' + typeOrString + ', 请先注入后再使用。'
     }
 
     if (typeof children === 'string' || children === null) {

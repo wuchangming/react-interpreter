@@ -1,6 +1,6 @@
 # react-interpreter
 
-React 沙盒，可理解为 React 版的 `eval()` 。该沙盒运行机制可使基于 React 实现的小程序框架「如 Taro3 等」拥有 🚀 **热更新**能力。
+React 沙盒 📦，可理解为 React 版的 `eval()` 。该沙盒运行机制可使基于 React 实现的小程序框架「如 Taro3 等」拥有 🚀 **热更新**能力。
 
 <a href="https://unpkg.com/react-interpreter/dist/react-interpreter.min.js"><img src="https://img.badgesize.io/https://unpkg.com/react-interpreter/dist/react-interpreter.min.js?compression=gzip&style=flat-square" alt="Gzip Size"></a>
 <a href="https://www.npmjs.com/package/react-interpreter"><img src="https://img.shields.io/npm/v/react-interpreter.svg?style=flat-square&colorB=51C838" alt="NPM Version"></a>
