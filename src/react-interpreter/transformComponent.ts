@@ -1,18 +1,18 @@
 import React from 'react'
-import { FuncPrefix } from './constants'
+import { FuncPrefix, ReactFragmentFlag } from './constants'
 
 type SupportType = {
     type: string
 }
 
-export type CompObj = [SupportType | string, object | null, CompObj[]]
+export type CompObj = [SupportType | string, object | null, CompObj[]?] | []
 
 export function transformComponent(
     polyfillComponents: { [key in string]: any },
     compObj: CompObj,
     invokeInside: (id: string, args: IArguments) => void
 ) {
-    if (compObj === null || typeof compObj === 'string') {
+    if (compObj === null || typeof compObj === 'string' || compObj.length === 0) {
         return compObj
     }
 
@@ -34,13 +34,15 @@ export function transformComponent(
         }
     }
 
-    const Comp: React.ComponentType = polyfillComponents[(typeOrString as SupportType).type]
+    const type = (typeOrString as SupportType)?.type
 
-    if (Comp === undefined) {
-        throw '不支持当前 Component 类型: ' + typeOrString + ', 请先注入后再使用。'
+    let Comp: React.ComponentType = polyfillComponents[type]
+
+    if (type === ReactFragmentFlag) {
+        Comp = React.Fragment
     }
 
-    if (typeof children === 'string' || children === null) {
+    if (typeof children === 'string' || children === null || children === undefined) {
         return React.createElement(Comp, props, children)
     } else if (Array.isArray(children)) {
         const childrenElement = children.map((subCom: CompObj) => {

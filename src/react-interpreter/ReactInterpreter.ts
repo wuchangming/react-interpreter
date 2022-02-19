@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Interpreter from '../js-interpreter/interpreter'
 import { transformComponent, CompObj } from './transformComponent'
-import { SendMessageKey, FuncPrefix } from './constants'
+import { SendMessageKey, FuncPrefix, ReactFragmentFlag } from './constants'
 import { createAsyncSwitcher } from './createAsyncSwitcher'
 import { injectGlobalObject } from './injectGlobalObject'
 
@@ -31,10 +31,10 @@ type ReactInterpreterProps = {
     globalObject?: { [key in string]: any }
     /**
      * 设置被注入的全局变量的复杂属性最大层级。
-     * 
+     *
      * 为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会
      * 被丢弃掉「如 function 和出现循环引用的 object 等」。
-     * 
+     *
      * 默认值：3
      */
     globalObjectComplexPropLevel?: number
@@ -73,6 +73,7 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
                     return ${SendMessageKey}(JSON.stringify(msg));
                 }
                 var React = {
+                    Fragment: { type: "${ReactFragmentFlag}" },
                     createElement: function(component, props) {
                         for(var k in props) {
                             if(typeof props[k] === 'function') {
