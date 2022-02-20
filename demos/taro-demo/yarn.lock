@@ -10938,10 +10938,10 @@ react-dom@^17.0.0:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-interpreter@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-interpreter/-/react-interpreter-0.2.0.tgz#5a096273fa97651a20804bf61c66f4442df9456f"
-  integrity sha512-i/znj4T8wBLjVOrUBkMJoiAEuIOAffPAVAe8rw/AenvFri2JaoQch5iU4Tx3h7ku0JNukk4v9uuWXzA8RLJYbg==
+react-interpreter@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-interpreter/-/react-interpreter-0.2.1.tgz#aa4d24524886fa0bd8c65e95469d8f825dfc745a"
+  integrity sha512-hk2MwowXFybpmd1DGozDgX8RO56P4bLU3xBf4GOSonRFvyVPEGMC2dio8xBe4QzS3Z4lLV8NR3Dz0RXaBdP0ww==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
