@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Interpreter from '../js-interpreter/interpreter'
 import { transformComponent, CompObj } from './transformComponent'
-import { SendMessageKey, FuncPrefix, ReactFragmentFlag } from './constants'
+import { SendMessageKey, FuncPrefix, ReactFragmentFlag, CompPropsName } from './constants'
 import { createAsyncSwitcher } from './createAsyncSwitcher'
 import { injectGlobalObject } from './injectGlobalObject'
 
@@ -91,7 +91,7 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
                 };
                 var id = 0;
                 var funcsMap = {};
-                var comps = (${compCode})(${JSON.stringify(restProps)});
+                var comps = (${compCode})(${CompPropsName});
                 sendMsg({
                     type: 'render',
                     comps: comps
@@ -131,7 +131,12 @@ export function ReactInterpreter<T>(props: T & ReactInterpreterProps) {
                 )
             )
             // 注入全局变量
-            injectGlobalObject(interpreter, globalObject, inputGlobalObject, globalObjectComplexPropLevel)
+            injectGlobalObject(
+                interpreter,
+                globalObject,
+                { ...inputGlobalObject, [CompPropsName]: restProps },
+                globalObjectComplexPropLevel
+            )
         })
         compInterpreter.run()
     }, [props])
