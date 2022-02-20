@@ -21,12 +21,13 @@ yarn add react-interpreter --save
 
 ### `ReactInterpreter` - React 沙盒组件
 
+---
+
 -   ### **Props**
 
-    -   #### `code`
+    -   #### `code -- React 沙盒运行的代码字符串`
 
-        React 沙盒运行的代码字符串  
-        ⚠️ `PS: React 沙盒组件运行的字符串代码只支持 es5，也不支持 jsx。可以先通过`[**babel 进行转换**](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
+        ⚠️ `PS: React 沙盒组件运行的字符串代码需使用 es5 编写的函数组件，不支持 hooks、class 组件。不直接支持 jsx 写法，可以先通过` [**babel 进行转换**](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
 
         ```ts
         import { ReactInterpreter } from 'react-interpreter'
@@ -83,132 +84,68 @@ yarn add react-interpreter --save
 
         -   效果图
 
-
             <image src='./docs/imgs/code-demo.jpeg' width = '200'/>
 
-    -   #### `globalObject`
-        需要注入沙盒中的全局变量
+    -   #### `globalObject -- 需要注入沙盒中的全局变量`
 
         ```ts
         globalObject = {
             wx, // 注入 wx 全局变量
-            console // 注入 console 控制台
+            console, // 注入 console 控制台
         }
         ```
 
-    -   #### `componentMap`
-        需要注入沙盒中的 React 组件
+    -   #### `componentMap -- 需要注入沙盒中的 React 组件`
 
         ```ts
         import { View } from '@tarojs/components'
-        componentMap={
-            View
+        componentMap = {
+            View,
         }
         ```
 
-    -   #### `globalObjectComplexPropLevel`
+    -   #### `globalObjectComplexPropLevel -- 全局变量复杂属性最大层级`
 
         `默认值：3`
 
-        设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。
+        `设置被注入的全局变量的复杂属性最大层级。为了保证转化效率，大于该层级的任何不能 JSON.stringify 的内容都会被丢弃掉「如 function 和出现循环引用的 object 等」。`
 
--   ### 实例
+    -   #### `沙盒组件 props 传值方式`
 
-    -   ### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
+        `除了 ReactInterpreter API 外的其他 props 都会被直接透传到沙盒内的组件`
 
-        ```tsx
-        import { ReactInterpreter } from 'react-interpreter'
-        import Taro from '@tarojs/taro'
-        import * as taroComponents from '@tarojs/components'
-
-        /*
-            Babel 转换前代码如下：
-
-            // 注意：这个组件名命名只要不和注入的组件重名就行，没有特别要求
-            function MyReactInterpreterComp() {
-                return (
-                    <View
-                        style={{
-                            backgroundColor: 'pink',
-                            height: '100vh',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Button
-                            style={{ backgroundColor: 'blue', color: '#FFFFFF' }}
-                            onClick={() => {
-                                Taro.showToast({
-                                    icon: 'none',
-                                    title: '😂😂😂',
-                                })
-                            }}
-                        >
-                            Click Me!
-                        </Button>
-                    </View>
-                )
-            }
-        */
-
-        // Babel 转换后
+        ```ts
         const codeString = `
-        function MyReactInterpreterComp() {
-        return /*#__PURE__*/ React.createElement(
-            View,
-            {
-            style: {
-                backgroundColor: "pink",
-                height: "100vh",
-                display: "flex",
-                alignItems: "center"
-            }
-            },
-            /*#__PURE__*/ React.createElement(
-            Button,
-            {
-                style: {
-                backgroundColor: "blue",
-                color: "#FFFFFF"
+        function MyComp(props) {
+            return /*#__PURE__*/ React.createElement(
+                Button,
+                {
+                onClick: props.onClickMe
                 },
-                onClick: function onClick() {
-                Taro.showToast({
-                    icon: "none",
-                    title: "😂😂😂"
-                });
-                }
-            },
-            "Click Me!"
-            )
-        );
+                "I am a button -- ",
+                props.btnName
+            );
         }
         `
 
-        const MyComponent = () => {
-            return (
-                <ReactInterpreter
-                    // globalObject: 可设置沙盒内全局变量
-                    // 把 Taro 对象注入到沙盒中，有需要也可以把 wx 对象注入
-                    globalObject={{
-                        Taro,
-                    }}
-                    // componentMap: 接收真实的组件定义
-                    // 这里注入全部 @tarojs/components，可以根据实际情况选择部分注入
-                    componentMap={taroComponents}
-                    // code: 需要运行的组件代码
-                    // 只支持 es5，如果代码包含 jsx 和 es6，可先通过 babel 进行转换
-                    code={codeString}
-                />
-            )
-        }
-
+        const MyComp = () => (
+            <ReactInterpreter
+                code={codeString}
+                componentMap={{
+                    Button,
+                }}
+                // btnName, onClickMe 会被透传到沙盒中的组件
+                btnName={'我是个按钮🔘'}
+                onClickMe={() => {
+                    console.log('我被点击了！')
+                }}
+            ></ReactInterpreter>
+        )
         ```
 
-        Taro3 中用法示例效果图
-
-        <image src='./docs/imgs/demo.jpeg' width = '200'/>
-
 ### `JSInterpreter` - JS 沙盒
+
+---
 
 如果只需要执行 JS ，可直接使用 JSInterpreter
 
@@ -223,6 +160,10 @@ yarn add react-interpreter --save
     ```
 
     JSInterpreter 代码基本都是使用的 [JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter) 项目，只做了对微信小程序相关 bug 的修复，所以详细文档可直接参考 JS-Interpreter 文档： [https://neil.fraser.name/software/JS-Interpreter/docs.html](https://neil.fraser.name/software/JS-Interpreter/docs.html)
+
+## 实例 Demo
+
+-   ### Taro3 中用法示例 [查看 Demo 项目](./demos/taro-demo/)
 
 ## 灵感来源
 
