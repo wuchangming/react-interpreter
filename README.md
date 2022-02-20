@@ -25,7 +25,7 @@ yarn add react-interpreter --save
 
 -   ### **Props**
 
-    -   #### `code -- React 沙盒运行的代码字符串`
+    -   #### `code` -- React 沙盒运行的代码字符串
 
         ⚠️ `PS: React 沙盒组件运行的字符串代码需使用 es5 编写的函数组件，不支持 hooks、class 组件。不直接支持 jsx 写法，可以先通过` [**babel 进行转换**](https://babeljs.io/repl/#?browsers=defaults&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=true&targets=&version=7.17.2&externalPlugins=&assumptions=%7B%7D)
 
@@ -86,7 +86,7 @@ yarn add react-interpreter --save
 
             <image src='./docs/imgs/code-demo.jpeg' width = '200'/>
 
-    -   #### `globalObject -- 需要注入沙盒中的全局变量`
+    -   #### `globalObject` -- 需要注入沙盒中的全局变量
 
         ```ts
         globalObject = {
@@ -95,7 +95,7 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   #### `componentMap -- 需要注入沙盒中的 React 组件`
+    -   #### `componentMap` -- 需要注入沙盒中的 React 组件
 
         ```ts
         import { View } from '@tarojs/components'
@@ -104,7 +104,7 @@ yarn add react-interpreter --save
         }
         ```
 
-    -   #### `globalObjectComplexPropLevel -- 全局变量复杂属性最大层级`
+    -   #### `globalObjectComplexPropLevel` -- 全局变量复杂属性最大层级
 
         `默认值：3`
 
