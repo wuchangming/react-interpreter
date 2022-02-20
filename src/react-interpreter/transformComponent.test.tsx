@@ -112,4 +112,111 @@ test('transformComponent', () => {
             <Button i='b' />
         </View>
     )
+
+    /**
+     * [<Button i='a' />, <Button i='b' />]
+     */
+    expect(
+        transformComponent(
+            {
+                View,
+                Button,
+            },
+            [
+                [
+                    {
+                        type: 'Button',
+                    },
+                    { i: 'a' },
+                ],
+                [
+                    {
+                        type: 'Button',
+                    },
+                    { i: 'b' },
+                ],
+            ],
+            invokeInside
+        )
+    ).toEqual([<Button i='a' />, <Button i='b' />])
+
+    /**
+     * ['123123', <Button i='b' />]
+     */
+    expect(
+        transformComponent(
+            {
+                View,
+                Button,
+            },
+            [
+                '123123',
+                [
+                    {
+                        type: 'Button',
+                    },
+                    { i: 'b' },
+                ],
+            ],
+            invokeInside
+        )
+    ).toEqual(['123123', <Button i='b' />])
+
+    // [
+    //     '123123',
+    //     <View x={1}>
+    //         <Button i='a'></Button>
+    //     </View>,
+    // ]
+    expect(
+        transformComponent(
+            {
+                View,
+                Button,
+            },
+            [
+                '123123',
+                [
+                    {
+                        type: 'View',
+                    },
+                    { x: 1 },
+                    [[{ type: 'Button' }, { i: 'a' }]],
+                ],
+            ],
+            invokeInside
+        )
+    ).toEqual([
+        '123123',
+        <View x={1}>
+            <Button i='a'></Button>
+        </View>,
+    ])
+
+    // [
+    //     '123123',
+    //     <View x={1}>abc</View>,
+    // ]
+    expect(
+        transformComponent(
+            {
+                View,
+                Button,
+            },
+            [
+                '123123',
+                [
+                    {
+                        type: 'View',
+                    },
+                    { x: 1 },
+                    ['abc'],
+                ],
+            ],
+            invokeInside
+        )
+    ).toEqual([
+        '123123',
+        <View x={1}>abc</View>,
+    ])
 })
